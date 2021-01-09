@@ -1,0 +1,11 @@
+--- Gtk2-Unique-0.05.orig/xs/UniqueMessageData.xs	2010-05-05 11:47:45.000000000 -0400
++++ Gtk2-Unique-0.05/xs/UniqueMessageData.xs	2021-01-09 13:28:09.099262874 -0500
+@@ -38,7 +38,7 @@
+ unique_message_data_get (UniqueMessageData *message_data)
+ 	PREINIT:
+ 		const guchar *string = NULL;
+-		gint length = 0;
++		gsize length = 0;
+ 		
+ 	CODE:
+ 		string = unique_message_data_get(message_data, &length);

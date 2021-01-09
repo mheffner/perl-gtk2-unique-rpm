@@ -1,0 +1,23 @@
+sudo: required
+language: python
+
+env:
+  global:
+    - DOCKER_IMAGE=alectolytic/rpmbuilder
+    - COPR_REPOSITORY=perl-gtk2-unique
+    - OS_ARCH=noarch
+  matrix:
+    - OS_TYPE=fedora OS_DIST=fedora OS_VERSION=33
+
+services:
+  - docker
+
+install: true
+
+script:
+  - docker run -v ${PWD}:/sources -v ${PWD}:/output:Z -e "SRPM_ONLY=1" ${DOCKER_IMAGE}:${OS_TYPE}-${OS_VERSION}
+
+after_success:
+  - pip install copr-cli simplejson
+  - openssl aes-256-cbc -K $encrypted_334267c9f3a5_key -iv $encrypted_334267c9f3a5_iv -in .copr.config.enc -out .copr.config -d
+  - if [ ! -z "${TRAVIS_TAG}" ]; then copr-cli --config .copr.config build --nowait -r ${OS_DIST}-${OS_VERSION}-${OS_ARCH} ${COPR_REPOSITORY} *.src.rpm; fi
